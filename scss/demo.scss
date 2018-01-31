@@ -1,0 +1,332 @@
+// Some variables to use later
+$button-width: 300px;
+$button-height: 70px;
+$button-border: 3px;
+$icon-padding: 5px;
+$icon-width: $button-height - ($icon-padding * 2);
+$ball-width: 18px;
+
+body {
+  background-color: #323536;
+}
+
+// Button container
+.download-button-container {
+  position: fixed;
+  width: $button-width;
+  height: $button-height;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+
+  // Following are the different states for the button: downloading, progressing and completed
+  // We have defined the states in the container to have access to all descendants in CSS
+
+  // Downloading: The download button has been pressed
+  &.downloading {
+
+    .download-button {
+      width: $button-height;
+    }
+
+    .button-text-download {
+      top: 80%;
+      transform: translateY(-50%) scale(1);
+      opacity: 0;
+    }
+
+    .button-wave {
+      left: -10px;
+
+      &:before {
+        background-color: transparent;
+        transform: scale(1.6);
+      }
+    }
+
+    .button-icon-svg {
+      transform: rotate(0deg);
+    }
+
+    .button-icon-path-square {
+      fill: white;
+    }
+  }
+
+  // Progressing: The progress starts
+  &.progressing {
+
+    .button-icon {
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .button-ball {
+      left: - $ball-width / 2;
+      top: - $ball-width / 2;
+      width: $ball-width;
+      height: $ball-width;
+    }
+  }
+
+  // Completed: The progress ends
+  &.completed {
+
+    .download-button {
+      width: $button-width - $button-height;
+    }
+
+    .button-icon {
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .button-icon, .button-svg {
+      opacity: 0;
+      transition: 0.3s;
+    }
+
+    .button-text-done {
+      transform: translate(-50%, -50%);
+      opacity: 1;
+      transition: 0.8s 1s cubic-bezier(0.175, 0.885, 0.320, 1.275); /* easeOutBack */
+    }
+
+    .border-path {
+      stroke: #00FF8D;
+    }
+
+    .button-ball {
+      left: 50%;
+      transition: none;
+      // CSS animations for the ball. All of them starts at the same time, so we need to take care of delays
+      animation:
+              ball-throw-up 0.5s ease-out forwards, // Throw up the ball for 0.5s
+              ball-throw-down 0.5s 0.5s ease-in forwards, // Wait 0.5 seconds (throw up), and throw down the ball for 0.5s
+              ball-rubber 1s forwards; // Move the ball like a rubber deformation during 1s (throw up + throw down)
+    }
+  }
+}
+
+// Throw up animation
+@keyframes ball-throw-up {
+  from {
+    transform: translate(-50%, 17.5px);
+  }
+  to {
+    transform: translate(-50%, -60px);
+    background-color: #00FF8D;
+  }
+}
+
+// Throw down animation
+@keyframes ball-throw-down {
+  from {
+    transform: translate(-50%, -60px);
+  }
+  to {
+    transform: translate(-50%, 80px);
+  }
+}
+
+// Rubber animation
+@keyframes ball-rubber {
+  from {
+    width: $ball-width;
+  }
+  25% {
+    width: $ball-width * 0.75;
+  }
+  50% {
+    width: $ball-width;
+  }
+  to {
+    width: $ball-width / 2;
+  }
+}
+
+// Real button styles
+.download-button {
+  position: relative;
+  display: inline-block;
+  width: $button-width;
+  height: $button-height;
+  background-color: #2C2E2F;
+  border: none;
+  box-shadow: 0 0 0 $button-border #02D1FF; // This will be the 'border'
+  border-radius: 100px;
+  cursor: pointer;
+  transition: 1s width, 0.3s box-shadow;
+
+  // Remove the default behavior of buttons
+  &, &:focus {
+    padding: 0;
+    outline: none;
+  }
+  &::-moz-focus-inner {
+    border: 0;
+  }
+
+  // Styles for the different states of the button
+  &:hover, &:active, &:focus {
+    box-shadow: 0 0 0 $button-border #02D1FF, 0 0 20px $button-border darken(#02D1FF, 20%);
+  }
+  &.button-hidden {
+    box-shadow: 0 0 0 $button-border transparent;
+    &:hover, &:active, &:focus {
+      box-shadow: 0 0 0 $button-border transparent, 0 0 20px $button-border darken(#02D1FF, 20%);
+    }
+  }
+}
+
+.button-icon {
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: $icon-width;
+  height: $icon-width;
+  background-color: #02D1FF;
+  border-radius: 100%;
+}
+
+.button-icon-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-225deg);
+  transition: 1s transform;
+}
+
+.button-icon-path {
+  fill: transparent;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: $button-border;
+  stroke: white;
+}
+
+.button-icon-path-square {
+  transition: 0.8s 0.2s fill;
+}
+
+.button-text {
+  position: absolute;
+  top: 50%;
+  color: white;
+  font-size: 1.3em;
+  pointer-events: none;
+}
+
+.button-text-download {
+  left: $button-width / 2 - $icon-width / 2;
+  transform: translateY(-50%);
+  transition: transform 1s, top 0.3s 0.2s, opacity 0.3s 0.2s;
+}
+
+.button-text-done {
+  left: 50%;
+  transform: translate(-50%, $button-height / 2);
+  opacity: 0;
+  transition: 0.5s opacity, 1s transform;
+}
+
+.button-wave {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: -9999em;
+  top: 50%;
+  transform: translateY(-50%);
+  width: $icon-width + 30px;
+  height: $icon-width + 30px;
+  border-radius: 100%;
+  overflow: hidden;
+  pointer-events: none;
+
+  &:before {
+    content: '';
+    width: $icon-width;
+    height: $icon-width;
+    background-color: rgba(255, 255, 255, 1);
+    border: 5px solid rgba(255, 255, 255, 1);
+    border-radius: 100%;
+    transition: 0.5s background, 1s transform;
+    transition-timing-function: ease-out;
+  }
+}
+
+.button-progress-container {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.button-svg {
+  width: 100%;
+  height: 100%;
+
+  .button-circular-progress {
+    fill: none;
+    stroke-width: 5px;
+    stroke: white;
+  }
+}
+
+.button-ball {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  background-color: white;
+  border-radius: 100%;
+  pointer-events: none;
+  transition: 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.875); /* easeOutBackModified */
+  transition-property: left, top, width, height;
+}
+
+.button-linear-progress {
+  position: absolute;
+  width: $icon-width - $icon-padding * 2;
+  height: $icon-width - $icon-padding * 2;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #00AFD7;
+  border-radius: 100%;
+  overflow: hidden;
+}
+
+.button-linear-progress-bar {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background-color: #02D1FF;
+}
+
+.border-svg {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.border-path {
+  fill: #2C2E2F;
+  stroke-width: $button-border;
+  stroke: #02D1FF;
+  transition: 0.3s 1s stroke;
+}
+
+// Helper class to hide elements
+.hidden {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}

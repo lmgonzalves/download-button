@@ -1,0 +1,29 @@
+{
+  "name": "download-button",
+  "description": "Download Button full of Micro Interactions",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lmgonzalves/download-button.git"
+  },
+  "keywords": [
+    "button",
+    "svg",
+    "animation",
+    "interaction"
+  ],
+  "author": "lmgonzalves",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lmgonzalves/download-button/issues"
+  },
+  "homepage": "http://lmgonzalves.github.io/download-button/",
+  "engine": {
+    "node": ">=6.0"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.13.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-sass": "^2.3.1"
+  }
+}
